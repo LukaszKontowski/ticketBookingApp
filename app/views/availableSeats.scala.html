@@ -13,4 +13,15 @@
   }
 </ol>
 
+<h2>Choose one seat or multiple seats within one row</h2>
+<h3>Note: There cannot be a single place left over in a row between two already reserved places.</h3>
+<h3>Note: if you want to choose multiple seats within one row - split their numbers using "," symbol</h3>
+<h4>(no whitespaces allowed and please type in only correct row + seat combinations)</h4>
+<form method="post" action="@routes.TicketBooking.chooseSeats">
+  @helper.CSRF.formField
+  Row number: <input type="text" name="rowNumber"/><br><br>
+  Seat number: <input type="text" name="seatNumber"><br><br>
+  <input type="submit" value="Choose seat / seats"/>
+</form>
+
 }

@@ -16,6 +16,7 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
   private var chosenScreeningOption: Option[Screening] = None
   private var chosenSeats: Seq[(Int, Int)] = Nil
   private var chosenTickets: List[Ticket] = Nil
+  private var reservationOption: Option[Reservation] = None
 
   val customerDataForm: Form[Customer] = Form(mapping(
     "name" -> text(3),
@@ -60,4 +61,6 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
   def availableSeats: Action[AnyContent] = Action { implicit request =>
     Ok(views.html.availableSeats(chosenScreeningOption.get))
   }
+
+  def chooseSeats: Action[AnyContent] = TODO
 }
