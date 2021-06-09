@@ -1,0 +1,21 @@
+@* ticketBookingInit Template File *@
+@()(implicit request: MessagesRequestHeader, flash: Flash)
+
+@main("Ticket Booking Init") {
+<h2>Choose date and time when You would like to see a movie:</h2>
+<br>
+
+<form method="post" action=@routes.TicketBooking.chooseDateAndTime>
+  @helper.CSRF.formField
+  <label for="dateTime">Good time to watch a movie (date and time):</label>
+  <input type="datetime-local" id="dateTime" name="dateTime">
+  <div class="form-actions">
+    <button type="submit">Show available movies!</button>
+  </div>
+</form>
+
+<br><br>
+<p><strong>Note:</strong> type="datetime-local" is not supported in Firefox, Safari or Internet Explorer 12 (or earlier).</p>
+
+
+}
