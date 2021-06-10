@@ -146,6 +146,9 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
   }
 
   def reservationSummary: Action[AnyContent] = Action { implicit request =>
-    Ok("all ok")
+    val customerDataArray = request.session.get("name_surname").get.split("_")
+    val customer = Customer(customerDataArray(0), customerDataArray(1))
+    reservationOption = Some(Reservation(chosenScreeningOption.get, customer, chosenTickets))
+    Ok(views.html.reservationSummary(reservationOption.get))
   }
 }

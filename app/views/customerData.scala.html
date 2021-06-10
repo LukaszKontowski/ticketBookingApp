@@ -16,7 +16,7 @@
 <h2>Total price: @tickets.map(_.ticketType.price).sum zł</h2>
 
 <h2>Type in name and surname to make a reservation:</h2>
-<h3>Note: either name or surname must start with a capital letter (z balszoj bukwy)</h3>
+<h3>Note: either name or surname must start with a capital letter</h3>
 @helper.form(action = routes.TicketBooking.createCustomer) {
 @helper.CSRF.formField
 @helper.inputText(customerDataForm("name"))

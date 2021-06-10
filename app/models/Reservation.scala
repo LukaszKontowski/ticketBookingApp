@@ -1,6 +1,6 @@
 package models
 
-case class Reservation(screening: Screening, customer: Customer, tickets: List[Ticket]) {
+case class Reservation(screening: Screening, customer: Customer, tickets: Seq[Ticket]) {
   val totalPrice: Double = tickets.map(_.ticketType.price).sum
 
   def makeReservation: Unit =
