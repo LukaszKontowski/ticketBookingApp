@@ -20,7 +20,7 @@ case class DefaultScreenings(chosenDateTime: LocalDateTime) {
   private val from = chosenDateTime.minusDays(1).withHour(12).withMinute(0)
   private val to = chosenDateTime.plusDays(1).withHour(12).withMinute(0)
 
-  lazy val availableScreenings: List[Screening] = {
+  def availableScreenings: List[Screening] = {
     fillRoomWithScreenings(screeningRoom1, mortalKombat, from, to, Nil).sortBy(_.startTime) ++
       fillRoomWithScreenings(screeningRoom2, fastAndFurious, from, to, Nil).sortBy(_.startTime) ++
       fillRoomWithScreenings(screeningRoom3, ultimateRapBattle, from, to, Nil).sortBy(_.startTime) ++
