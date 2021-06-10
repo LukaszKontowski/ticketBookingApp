@@ -15,11 +15,14 @@ git clone https://github.com/LukaszKontowski/ticketBookingApp.git
 4) In command line (terminal) change directory into ticket booking app's root directory:  
 cd ./ticketbookingapp
   
-5) Execute run.sh script that would build and run this app for you:  
+5) Make sure you can execute and execute run.sh script that would build and run this app for you:  
+chmod 777 run.sh  
 ./run.sh  
   
 6) When the app's server is already up and running, there are at least two options to check it out:  
     a) You may check this app like a real user in your browser at this url (initial page):
        http://localhost:9000/ticketBooking  
   
-    b) You may also check it using command line tools - e.g. curl to see requests and responses in action.  
+    b) You may also check it using command line tools - e.g. curl to see requests and responses in action. 
+  
+7) If you want to stop the application - just hit ENTER in command line in the tab, where you did execute ./run.sh   
