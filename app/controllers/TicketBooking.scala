@@ -22,7 +22,8 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
 
   val customerDataForm: Form[Customer] = Form(mapping(
     "name" -> text(3),
-    "surname" -> text(3))(Customer.apply)(Customer.unapply))
+    "surname" -> text(3)
+  )(Customer.apply)(Customer.unapply))
 
   def ticketBookingInit: Action[AnyContent] = Action { implicit request =>
     Ok(views.html.ticketBookingInit())
@@ -91,7 +92,7 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
               else
                 Redirect(routes.TicketBooking.availableSeats)
                   .withSession(request.session)
-                  .flashing("error" -> "NOTVALIDseats chosen incorrectly - try again and follow the rules!")
+                  .flashing("error" -> "seats chosen incorrectly - try again and follow the rules!")
           }
         }
         case _ => {
@@ -122,5 +123,29 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
     }.getOrElse(Redirect(routes.TicketBooking.ticketBookingInit).withNewSession)
   }
 
-  def customerData: Action[AnyContent] = TODO
+  def customerData: Action[AnyContent] = Action { implicit request =>
+    Ok(views.html.customerData(customerDataForm, chosenScreeningOption.get, chosenTickets))
+  }
+
+  def createCustomer: Action[AnyContent] = Action { implicit request =>
+    customerDataForm.bindFromRequest.fold(
+      formWithErrors =>
+        Redirect(routes.TicketBooking.customerData)
+          .withSession(request.session)
+          .flashing("error" -> "invalid name or surname - try again!"),
+      correctForm => {
+        val customer = correctForm
+        if (customer.isPersonalDataValid)
+          Redirect(routes.TicketBooking.reservationSummary)
+            .withSession(request.session.+("name_surname" -> (customer.name + "_" + customer.surname)))
+        else
+          Redirect(routes.TicketBooking.customerData)
+            .withSession(request.session)
+            .flashing("error" -> "invalid name or surname - try again!")
+      })
+  }
+
+  def reservationSummary: Action[AnyContent] = Action { implicit request =>
+    Ok("all ok")
+  }
 }
