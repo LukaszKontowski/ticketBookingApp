@@ -34,6 +34,7 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
         val chosenDateTime = args("dateTime").head
         Redirect(routes.TicketBooking.availableMovies).withSession("dateTime" -> chosenDateTime)
       } else {
+        println("empty date time")
         Redirect(routes.TicketBooking.ticketBookingInit).flashing("error" -> "choose date and time!")
       }
     }.getOrElse(Redirect(routes.TicketBooking.ticketBookingInit))
