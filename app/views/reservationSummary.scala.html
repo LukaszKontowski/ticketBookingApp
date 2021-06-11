@@ -22,6 +22,9 @@
 <br>otherwise your reservation will expire and you will loose your seats</h2>
 
 <br>
-<input type="button" value="Go to payment"/>
+<form method="post" action=@routes.TicketBooking.finishSession>
+  @helper.CSRF.formField
+<input type="submit" value="Pay and end current session"/>
+</form>
 
 }

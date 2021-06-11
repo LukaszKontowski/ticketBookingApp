@@ -3,11 +3,6 @@ package models
 case class Reservation(screening: Screening, customer: Customer, tickets: Seq[Ticket]) {
   val totalPrice: Double = tickets.map(_.ticketType.price).sum
 
-  def makeReservation: Unit =
-    for (ticket <- this.tickets) {
-      this.screening.screeningRoomPlaces(ticket.rowNumber)(ticket.seatNumberInRow) = "BUSY"
-    }
-
   val isValid: Boolean = {
     this.tickets.nonEmpty &&
     this.tickets.forall(ticket =>

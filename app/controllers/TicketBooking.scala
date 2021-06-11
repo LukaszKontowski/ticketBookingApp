@@ -1,24 +1,22 @@
 package controllers
 
 import models._
-
-import javax.inject._
-import play.api.mvc._
-import play.api.i18n._
-import play.api.data._
 import play.api.data.Forms._
+import play.api.data._
+import play.api.mvc._
 
-import scala.util.{Try,Success,Failure}
 import java.time.LocalDateTime
+import javax.inject._
+import scala.util.{Failure, Success, Try}
 
 @Singleton
 class TicketBooking @Inject() (cc: MessagesControllerComponents) extends MessagesAbstractController(cc) {
 
-  private var availableScreenings: List[Screening] = Nil
+  private val availableScreenings: List[Screening] = DefaultScreenings.getAvailableScreenings
+  private var availableScreeningsFiltered: List[Screening] = Nil
   private var chosenScreeningOption: Option[Screening] = None
   private var chosenSeats: Seq[(Int, Int)] = Nil
   private var chosenTickets: Seq[Ticket] = Nil
-  private var reservationOption: Option[Reservation] = None
 
   val customerDataForm: Form[Customer] = Form(mapping(
     "name" -> text(3),
@@ -48,8 +46,13 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
         Redirect(routes.TicketBooking.ticketBookingInit)
           .withNewSession.flashing("error" -> "wrong date-time format")
       case Success(dateTime) =>
-        availableScreenings = DefaultScreenings(dateTime).availableScreenings
-        Ok(views.html.availableMovies(availableScreenings))
+        availableScreeningsFiltered =
+          availableScreenings.filter(screening =>
+            screening.startTime.plusMinutes(90).isAfter(dateTime) &&
+              screening.startTime.minusHours(3).isBefore(dateTime) &&
+              screening.startTime.minusMinutes(15).isAfter(LocalDateTime.now())
+          )
+        Ok(views.html.availableMovies(availableScreeningsFiltered))
     }
   }
 
@@ -68,7 +71,11 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
   }
 
   def availableSeats: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.availableSeats(chosenScreeningOption.get))
+    val screeningTry = Try(chosenScreeningOption.get)
+    screeningTry match {
+      case Failure(_) => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
+      case Success(screening) => Ok(views.html.availableSeats(screening))
+    }
   }
 
   def chooseSeats: Action[AnyContent] = Action { implicit request =>
@@ -105,7 +112,15 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
   }
 
   def availableTickets: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.availableTickets(chosenScreeningOption.get, chosenSeats))
+    val screeningTry = Try(chosenScreeningOption.get)
+    screeningTry match {
+      case Failure(_) => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
+      case Success(screening) =>
+        chosenSeats match {
+          case Nil => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
+          case x :: xs => Ok(views.html.availableTickets(screening, chosenSeats))
+        }
+    }
   }
 
   def chooseTicketTypes: Action[AnyContent] = Action { implicit request =>
@@ -117,14 +132,22 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
         case "adult" => new AdultTicket
       }
       val rowSeatType = chosenSeats.zip(ticketTypes)
-      chosenTickets = rowSeatType.map{ case ((row, seat), ticketType) => Ticket(row, seat, ticketType) }
+      chosenTickets = rowSeatType.map{ case ((row, seat), ticketType) => Ticket(row, seat-1, ticketType) }
       Redirect(routes.TicketBooking.customerData)
         .withSession(request.session)
     }.getOrElse(Redirect(routes.TicketBooking.ticketBookingInit).withNewSession)
   }
 
   def customerData: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.customerData(customerDataForm, chosenScreeningOption.get, chosenTickets))
+    val screeningTry = Try(chosenScreeningOption.get)
+    screeningTry match {
+      case Failure(_) => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
+      case Success(screening) =>
+        chosenTickets match {
+          case Nil => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
+          case x :: xs => Ok(views.html.customerData(customerDataForm, screening, chosenTickets))
+        }
+    }
   }
 
   def createCustomer: Action[AnyContent] = Action { implicit request =>
@@ -146,9 +169,32 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
   }
 
   def reservationSummary: Action[AnyContent] = Action { implicit request =>
-    val customerDataArray = request.session.get("name_surname").get.split("_")
-    val customer = Customer(customerDataArray(0), customerDataArray(1))
-    reservationOption = Some(Reservation(chosenScreeningOption.get, customer, chosenTickets))
-    Ok(views.html.reservationSummary(reservationOption.get))
+    val customerDataArrayTry = Try(request.session.get("name_surname").get.split("_"))
+    customerDataArrayTry match {
+      case Failure(_) => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
+      case Success(customerDataArray) =>
+        Try(Customer(customerDataArray(0), customerDataArray(1))) match {
+          case Failure(_) => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
+          case Success(customer) =>
+            val reservationTry = Try(Reservation(chosenScreeningOption.get, customer, chosenTickets))
+            reservationTry match {
+              case Failure(msg) => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
+              case Success(reservation) =>
+                if (reservation.isValid) {
+                  reservation.screening.makeReservation(reservation.tickets)
+                  Ok(views.html.reservationSummary(reservation))
+                } else {
+                  Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
+                }
+            }
+        }
+    }
+  }
+
+  def finishSession: Action[AnyContent] = Action { implicit request =>
+    chosenScreeningOption= None
+    chosenSeats= Nil
+    chosenTickets = Nil
+    Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
   }
 }
