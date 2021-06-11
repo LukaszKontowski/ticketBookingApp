@@ -28,11 +28,6 @@ case class Screening(movie: Movie, screeningRoom: ScreeningRoom, startTime: Loca
     realScreeningRoomPlaces.update(10, Array.fill(10)("FREE."))
   }
 
-
-  /*def currentPlacesViewAsString: String =
-    (for (arr <- screeningRoomPlaces) yield (arr.mkString + "\n")).mkString.init*/
-
   override def toString: String =
     s"$movie <-> $screeningRoom <-> starts at: $startTime"
-
 }

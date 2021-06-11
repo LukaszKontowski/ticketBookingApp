@@ -3,6 +3,7 @@ package models
 import org.scalatestplus.play.PlaySpec
 
 class CustomerSpec extends PlaySpec {
+
   "Customer.isNameValid" must {
     "return true if given name is valid" in {
       Customer("Łukasz", "whatever").isNameValid mustBe (true)
@@ -50,4 +51,5 @@ class CustomerSpec extends PlaySpec {
       Customer("Łukasz", "Ba").isSurnameValid mustBe (false)
     }
   }
+
 }
