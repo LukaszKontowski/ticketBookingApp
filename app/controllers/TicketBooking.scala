@@ -4,6 +4,7 @@ import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
+import play.filters.csrf.CSRF
 
 import java.time.LocalDateTime
 import javax.inject._
@@ -24,7 +25,8 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
   )(Customer.apply)(Customer.unapply))
 
   def ticketBookingInit: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.ticketBookingInit())
+    val csrfToken = CSRF.getToken.get.value
+    Ok(views.html.ticketBookingInit()).withSession("csrfToken" -> csrfToken)
   }
 
   def chooseDateAndTime: Action[AnyContent] = Action { implicit request =>
@@ -32,8 +34,10 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
     postVals.map { args =>
       if (args("dateTime").head.nonEmpty) {
         val chosenDateTime = args("dateTime").head
-        Redirect(routes.TicketBooking.availableMovies).withSession("dateTime" -> chosenDateTime)
+        println(chosenDateTime)
+        Redirect(routes.TicketBooking.availableMovies).withSession(request.session.+("dateTime" -> chosenDateTime))
       } else {
+        println("empty date time")
         Redirect(routes.TicketBooking.ticketBookingInit).flashing("error" -> "choose date and time!")
       }
     }.getOrElse(Redirect(routes.TicketBooking.ticketBookingInit))
@@ -52,7 +56,7 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
               screening.startTime.minusHours(3).isBefore(dateTime) &&
               screening.startTime.minusMinutes(15).isAfter(LocalDateTime.now())
           )
-        Ok(views.html.availableMovies(availableScreeningsFiltered))
+        Ok(views.html.availableMovies(availableScreeningsFiltered)).withSession(request.session)
     }
   }
 
@@ -74,7 +78,7 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
     val screeningTry = Try(chosenScreeningOption.get)
     screeningTry match {
       case Failure(_) => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
-      case Success(screening) => Ok(views.html.availableSeats(screening))
+      case Success(screening) => Ok(views.html.availableSeats(screening)).withSession(request.session)
     }
   }
 
@@ -118,7 +122,7 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
       case Success(screening) =>
         chosenSeats match {
           case Nil => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
-          case x :: xs => Ok(views.html.availableTickets(screening, chosenSeats))
+          case x :: xs => Ok(views.html.availableTickets(screening, chosenSeats)).withSession(request.session)
         }
     }
   }
@@ -145,7 +149,7 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
       case Success(screening) =>
         chosenTickets match {
           case Nil => Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
-          case x :: xs => Ok(views.html.customerData(customerDataForm, screening, chosenTickets))
+          case x :: xs => Ok(views.html.customerData(customerDataForm, screening, chosenTickets)).withSession(request.session)
         }
     }
   }
@@ -182,7 +186,7 @@ class TicketBooking @Inject() (cc: MessagesControllerComponents) extends Message
               case Success(reservation) =>
                 if (reservation.isValid) {
                   reservation.screening.makeReservation(reservation.tickets)
-                  Ok(views.html.reservationSummary(reservation))
+                  Ok(views.html.reservationSummary(reservation)).withSession(request.session)
                 } else {
                   Redirect(routes.TicketBooking.ticketBookingInit).withNewSession
                 }

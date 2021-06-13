@@ -16,7 +16,7 @@ git clone https://github.com/LukaszKontowski/ticketBookingApp.git
 cd ./ticketbookingapp  
 git checkout dev  
   
-5) Make sure you can execute and execute run.sh script that would build and run this app for you:  
+5) Make sure you can execute the run-script and then execute it to build and run this app:  
 chmod 777 run.sh  
 ./run.sh  
   
