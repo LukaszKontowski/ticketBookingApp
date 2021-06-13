@@ -17,7 +17,7 @@ cd ./ticketbookingapp
 git checkout dev  
   
 5) Make sure you can execute the run-scripts and then execute run.sh to build and run this app:  
-chmod 777 ./curlScripts/properBooking.sh
+chmod 777 ./curlScripts/properBooking.sh  
 chmod 777 ./run.sh  
 ./run.sh  
   
