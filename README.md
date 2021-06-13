@@ -12,9 +12,8 @@ java -version (Make sure you have version 1.8 or 11.)
 3) Get all App's sourcecode from my github. You might do it in your command line:  
 git clone https://github.com/LukaszKontowski/ticketBookingApp.git  
   
-4) In command line (terminal) change directory into ticket booking app's root directory and switch to dev:  
+4) In command line (terminal) change directory into ticket booking app's root directory:  
 cd ./ticketbookingapp  
-git checkout dev  
   
 5) Make sure you can execute the run-scripts and then execute run.sh to build and run this app:  
 chmod 777 ./curlScripts/properBooking.sh  
