@@ -22,12 +22,13 @@ chmod 777 ./run.sh
 ./run.sh  
   
 6) When the app's server is already up and running, there are at least two options to check it out:  
-    a) after running ./run.sh - this script would automatically open browser and begin the shell script that would run whole use case calling respective endpoints (./curlScripts/properBooking.sh) - to see requests and responses in action -> this is a scenario, where everything is ok - data is valid and user goes from initial endpoint to the final one step-by-step. If You want to check out, how this app is handling invalid data or a user trying to get to some further endpoints in a tricky-way (forbidden) - you can check it out in browser or using curl.    
+   
+    a) after running ./run.sh - this script will: (1) automatically open browser and (2) begin the shell script that would run whole use case calling respective endpoints (./curlScripts/properBooking.sh) - to see requests and responses in action -> this is a scenario, where everything is ok - data is valid and user goes from initial endpoint to the final one step-by-step. If You want to check out, how this app is handling invalid data or a user trying to get to some further endpoints in a tricky-way (forbidden) - you can check it out in browser or using curl.    
   
     b) You may check this app like a real user in your browser at this url (initial page):
        http://localhost:9000/ticketBooking  
   
-    c) You may also check it using command line tools - e.g. curl to see requests and responses in action. 
+    c) You may also check it using command line tools - e.g. curl to see requests and responses in action.   
   
 7) If you want to stop the application - just hit ENTER in command line in the tab, where you did execute ./run.sh   
   
