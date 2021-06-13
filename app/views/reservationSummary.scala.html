@@ -24,7 +24,7 @@
 <br>
 <form method="post" action=@routes.TicketBooking.finishSession>
   @helper.CSRF.formField
-<input type="submit" value="Pay and end current session"/>
+<input type="submit" id="finish" name="finish" value="Pay and end current session"/>
 </form>
 
 }

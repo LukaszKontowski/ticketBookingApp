@@ -1,7 +1,7 @@
 package models
 
 case class Ticket(rowNumber: Int, seatNumberInRow: Int, ticketType: TicketType) {
-  override def toString: String = s"Row number: $rowNumber <--> seat number: $seatNumberInRow <--> ticket type: $ticketType <--> ticket's price: ${ticketType.price} zł"
+  override def toString: String = s"Row number: $rowNumber <--> seat number: ${seatNumberInRow + 1} <--> ticket type: $ticketType <--> ticket's price: ${ticketType.price} zł"
 }
 
 abstract class TicketType {

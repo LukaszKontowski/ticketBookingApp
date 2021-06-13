@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 
 object DefaultScreenings {
 
-  private val mortalKombat: Movie = Movie("Mortal Kombat", 110)
+  private val mortalKombat: Movie = Movie("Mortal Kombat", 105)
   private val fastAndFurious: Movie = Movie("Fast And Furious", 120)
   private val ultimateRapBattle: Movie = Movie("Ultimate Rap Battle", 75)
   private val tomAndJerry: Movie = Movie("Tom And Jerry", 90)
@@ -19,7 +19,7 @@ object DefaultScreenings {
   private val screeningRoom5 = ScreeningRoom(5)
 
   private val from = LocalDateTime.now().minusDays(1).withHour(12).withMinute(0).truncatedTo(ChronoUnit.MINUTES)
-  private val to = LocalDateTime.now().plusDays(7).withHour(12).withMinute(0).truncatedTo(ChronoUnit.MINUTES)
+  private val to = LocalDateTime.now().plusDays(21).withHour(12).withMinute(0).truncatedTo(ChronoUnit.MINUTES)
 
   private var mutableScreenings: List[Screening] = Nil
 

@@ -1,3 +1,4 @@
 sbt run &
-sleep 30
-open http://localhost:9000/ticketBooking
+sleep 60
+open http://localhost:9000/ticketBooking &
+./curlScripts/properBooking.sh
