@@ -1,0 +1,30 @@
+@* Customer Data Template File *@
+@(customerDataForm: Form[Customer], screening: Screening, tickets: Seq[Ticket])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@main("Customer Data") {
+<h2>Chosen movie:</h2>
+<li>@screening</li>
+<br>
+
+<h2>Chosen tickets and their prices:</h2>
+<ul>
+    @for(ticket <- tickets) {
+      <li>@ticket</li>
+    }
+</ul>
+
+<h2>Total price: @tickets.map(_.ticketType.price).sum zł</h2>
+
+<h2>Type in name and surname to make a reservation:</h2>
+<h3>Note: either name or surname must start with a capital letter</h3>
+@helper.form(action = routes.TicketBooking.createCustomer) {
+@helper.CSRF.formField
+@helper.inputText(customerDataForm("name"))
+@helper.inputText(customerDataForm("surname"))
+<div class="form-actions">
+    <button type="submit">Make reservation and go to payment</button>
+</div>
+}
+
+
+}
