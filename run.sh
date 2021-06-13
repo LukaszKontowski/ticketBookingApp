@@ -1,3 +1,3 @@
 sbt run &
-sleep 15
+sleep 30
 open http://localhost:9000/ticketBooking
