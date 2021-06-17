@@ -1,4 +1,5 @@
 # ticketBookingApp
+
 Ticket booking app for learning purposes  
   
 In order to run this app on your machine follow these steps:  
@@ -38,3 +39,6 @@ chmod 777 ./run.sh
 9) Note: this app is an imitation of a real ticket-booking system and this particular program works in-memory only. So - the ticket reeservations are being saved and remembered as long as the Play-app server is up and running. If you stop the application like in point 7) or if it breaks - all the reservations will be lost - after reinitializing the application will create screenings with their screening-room places once again - each time you restart the app server all the previous reservations are lost.  
   
 10) In this particular system the user can reserve one place or multiple seats within one reservation - but if he/she wants to reserve multiple seats - it is only possible within one row. It could be changed so that it would be possible to reserve on multiple rows within one reservation, but for now it is like it is (didn't have time for it).  
+=======
+ticket booking app for learning purposes
+
