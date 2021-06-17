@@ -1,5 +1,5 @@
 # ticketBookingApp
-ticket booking app for learning purposes  
+Ticket booking app for learning purposes  
   
 In order to run this app on your machine follow these steps:  
   
