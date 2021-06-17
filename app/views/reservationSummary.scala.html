@@ -1,0 +1,30 @@
+@* Reservation summary Template File *@
+@(reservation: Reservation)(implicit request: MessagesRequestHeader, flash: Flash)
+
+@main("Reservation summary") {
+<h2>Chosen movie:</h2>
+<li>@reservation.screening</li>
+<br>
+
+<h2>Chosen tickets and their prices:</h2>
+<ul>
+  @for(ticket <- reservation.tickets) {
+  <li>@ticket</li>
+  }
+</ul>
+
+<h2>Total price to pay: @reservation.tickets.map(_.ticketType.price).sum zł</h2>
+
+<h2>Customer Data:</h2>
+<li>@reservation.customer</li>
+
+<h2>You must pay for the reservation at latest 15 minutes before the screening begins,
+<br>otherwise your reservation will expire and you will loose your seats</h2>
+
+<br>
+<form method="post" action=@routes.TicketBooking.finishSession>
+  @helper.CSRF.formField
+<input type="submit" id="finish" name="finish" value="Pay and end current session"/>
+</form>
+
+}

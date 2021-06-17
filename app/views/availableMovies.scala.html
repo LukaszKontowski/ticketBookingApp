@@ -1,0 +1,21 @@
+@* Available Movies Template File *@
+@(screenings: List[Screening])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@main("Available Movies") {
+<h2>Movies available close to chosen time:</h2>
+<br>
+
+<ul>
+  @for(screening <- screenings) {
+  <li>@screening</li>
+  <form method="post" action="@routes.TicketBooking.chooseScreening">
+    @helper.CSRF.formField
+    <input type="hidden" name="title" value="@screening.movie.title"/>
+    <input type="hidden" name="startTime" value="@screening.startTime"/>
+    <input type="submit" value="Choose Movie" id="choose"/>
+  </form>
+  <br><br>
+  }
+</ul>
+
+}
